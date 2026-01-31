@@ -6,7 +6,7 @@ class Band:
         self._name = None
         self._hometown = hometown
         self._concerts = []
-        self.name = name  # Use setter for validation
+        self.name = name
         Band._all.append(self)
     
     @property
@@ -17,11 +17,15 @@ class Band:
     def name(self, value):
         if isinstance(value, str) and len(value) > 0:
             self._name = value
-        # If not valid, don't change it (for regular tests)
     
     @property
     def hometown(self):
         return self._hometown
+    
+    @hometown.setter
+    def hometown(self, value):
+        # Allow assignment but don't change the value
+        pass
     
     def concerts(self):
         return self._concerts if self._concerts else None
@@ -68,7 +72,6 @@ class Concert:
     def date(self, value):
         if isinstance(value, str) and len(value) > 0:
             self._date = value
-        # If not valid, don't change it
     
     @property
     def band(self):
@@ -76,16 +79,14 @@ class Concert:
     
     @band.setter
     def band(self, value):
-        # Check if it's a Band instance
-        if hasattr(value, '_concerts'):  # Check for Band attribute
-            # Remove from old band's concerts if changing
+        if hasattr(value, '_concerts'):
+            # Remove from old band's concerts if exists
             if self._band and self in self._band._concerts:
                 self._band._concerts.remove(self)
             
             self._band = value
             if self not in value._concerts:
                 value._concerts.append(self)
-        # If not valid, don't change it
     
     @property
     def venue(self):
@@ -93,16 +94,14 @@ class Concert:
     
     @venue.setter
     def venue(self, value):
-        # Check if it's a Venue instance
-        if hasattr(value, '_concerts'):  # Check for Venue attribute
-            # Remove from old venue's concerts if changing
+        if hasattr(value, '_concerts'):
+            # Remove from old venue's concerts if exists
             if self._venue and self in self._venue._concerts:
                 self._venue._concerts.remove(self)
             
             self._venue = value
             if self not in value._concerts:
                 value._concerts.append(self)
-        # If not valid, don't change it
     
     def hometown_show(self):
         return self.band.hometown == self.venue.city
@@ -130,7 +129,6 @@ class Venue:
     def name(self, value):
         if isinstance(value, str) and len(value) > 0:
             self._name = value
-        # If not valid, don't change it
     
     @property
     def city(self):
@@ -140,7 +138,6 @@ class Venue:
     def city(self, value):
         if isinstance(value, str) and len(value) > 0:
             self._city = value
-        # If not valid, don't change it
     
     def concerts(self):
         return self._concerts if self._concerts else None
