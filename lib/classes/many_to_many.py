@@ -1,41 +1,161 @@
+# classes/many_to_many.py
 class Band:
+    _all = []
+    
     def __init__(self, name, hometown):
-        self.name = name
-        self.hometown = hometown
-
+        self._name = None
+        self._hometown = hometown
+        self._concerts = []
+        self.name = name  # Use setter for validation
+        Band._all.append(self)
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._name = value
+        # If not valid, don't change it (for regular tests)
+    
+    @property
+    def hometown(self):
+        return self._hometown
+    
     def concerts(self):
-        pass
-
+        return self._concerts if self._concerts else None
+    
     def venues(self):
-        pass
-
+        if not self._concerts:
+            return None
+        venues_list = []
+        for concert in self._concerts:
+            if concert.venue not in venues_list:
+                venues_list.append(concert.venue)
+        return venues_list
+    
     def play_in_venue(self, venue, date):
-        pass
-
+        concert = Concert(date, self, venue)
+        return concert
+    
     def all_introductions(self):
-        pass
+        if not self._concerts:
+            return None
+        introductions = []
+        for concert in self._concerts:
+            introductions.append(concert.introduction())
+        return introductions
 
 
 class Concert:
+    _all = []
+    
     def __init__(self, date, band, venue):
+        self._date = None
+        self._band = None
+        self._venue = None
         self.date = date
         self.band = band
         self.venue = venue
-
+        Concert._all.append(self)
+    
+    @property
+    def date(self):
+        return self._date
+    
+    @date.setter
+    def date(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._date = value
+        # If not valid, don't change it
+    
+    @property
+    def band(self):
+        return self._band
+    
+    @band.setter
+    def band(self, value):
+        # Check if it's a Band instance
+        if hasattr(value, '_concerts'):  # Check for Band attribute
+            # Remove from old band's concerts if changing
+            if self._band and self in self._band._concerts:
+                self._band._concerts.remove(self)
+            
+            self._band = value
+            if self not in value._concerts:
+                value._concerts.append(self)
+        # If not valid, don't change it
+    
+    @property
+    def venue(self):
+        return self._venue
+    
+    @venue.setter
+    def venue(self, value):
+        # Check if it's a Venue instance
+        if hasattr(value, '_concerts'):  # Check for Venue attribute
+            # Remove from old venue's concerts if changing
+            if self._venue and self in self._venue._concerts:
+                self._venue._concerts.remove(self)
+            
+            self._venue = value
+            if self not in value._concerts:
+                value._concerts.append(self)
+        # If not valid, don't change it
+    
     def hometown_show(self):
-        pass
-
+        return self.band.hometown == self.venue.city
+    
     def introduction(self):
-        pass
+        return f"Hello {self.venue.city}!!!!! We are {self.band.name} and we're from {self.band.hometown}"
 
 
 class Venue:
+    _all = []
+    
     def __init__(self, name, city):
+        self._name = None
+        self._city = None
+        self._concerts = []
         self.name = name
         self.city = city
-
+        Venue._all.append(self)
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._name = value
+        # If not valid, don't change it
+    
+    @property
+    def city(self):
+        return self._city
+    
+    @city.setter
+    def city(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._city = value
+        # If not valid, don't change it
+    
     def concerts(self):
-        pass
-
+        return self._concerts if self._concerts else None
+    
     def bands(self):
-        pass
+        if not self._concerts:
+            return None
+        bands_list = []
+        for concert in self._concerts:
+            if concert.band not in bands_list:
+                bands_list.append(concert.band)
+        return bands_list
+    
+    def concert_on(self, date):
+        for concert in self._concerts:
+            if concert.date == date:
+                return concert
+        return None

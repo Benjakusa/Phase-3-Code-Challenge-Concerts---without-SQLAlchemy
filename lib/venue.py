@@ -3,9 +3,11 @@ class Venue:
     _all = []
     
     def __init__(self, name, city):
+        self._name = None
+        self._city = None
+        self._concerts = []
         self.name = name
         self.city = city
-        self._concerts = []
         Venue._all.append(self)
     
     @property
@@ -14,11 +16,9 @@ class Venue:
     
     @name.setter
     def name(self, value):
-        if not isinstance(value, str):
-            raise Exception("Name must be a string")
-        if len(value) <= 0:
-            raise Exception("Name must be greater than zero characters")
-        self._name = value
+        if isinstance(value, str) and len(value) > 0:
+            self._name = value
+        # If not valid, don't change it
     
     @property
     def city(self):
@@ -26,15 +26,13 @@ class Venue:
     
     @city.setter
     def city(self, value):
-        if not isinstance(value, str):
-            raise Exception("City must be a string")
-        if len(value) <= 0:
-            raise Exception("City must be greater than zero characters")
-        self._city = value
+        if isinstance(value, str) and len(value) > 0:
+            self._city = value
+        # If not valid, don't change it
     
     @property
     def concerts(self):
-        return self._concerts if self._concerts else None
+        return self._concerts or None
     
     @property
     def bands(self):
