@@ -1,13 +1,13 @@
 # classes/many_to_many.py
 class Band:
-    _all = []
+    all = []
     
     def __init__(self, name, hometown):
         self._name = None
         self._hometown = hometown
         self._concerts = []
         self.name = name
-        Band._all.append(self)
+        Band.all.append(self)
     
     @property
     def name(self):
@@ -53,7 +53,7 @@ class Band:
 
 
 class Concert:
-    _all = []
+    all = []
     
     def __init__(self, date, band, venue):
         self._date = None
@@ -62,7 +62,7 @@ class Concert:
         self.date = date
         self.band = band
         self.venue = venue
-        Concert._all.append(self)
+        Concert.all.append(self)
     
     @property
     def date(self):
@@ -111,7 +111,7 @@ class Concert:
 
 
 class Venue:
-    _all = []
+    all = []
     
     def __init__(self, name, city):
         self._name = None
@@ -119,7 +119,7 @@ class Venue:
         self._concerts = []
         self.name = name
         self.city = city
-        Venue._all.append(self)
+        Venue.all.append(self)
     
     @property
     def name(self):
